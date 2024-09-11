@@ -1,18 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import useSWR from 'swr';
 import axios from 'axios';
-import {RewardCard} from '../components/RewardCard';
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import useSWR from 'swr';
+import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
 
-import {theme} from '../themes';
+import {RewardCard, CollectedRewardCard} from '~/components';
+import {COLLECT_REWARD, REMOVE_REWARD} from '~/constants';
+import {theme} from '~/themes';
 
 const {colors} = theme;
 
@@ -37,16 +32,20 @@ export const RewardsScreen = () => {
     setAvailableRewards(prevRewards =>
       prevRewards.filter(item => item.id !== reward.id),
     );
-    dispatch({type: 'COLLECT_REWARD', payload: reward});
+    dispatch({type: COLLECT_REWARD, payload: reward});
   };
 
   const handleRemoveReward = reward => {
     setAvailableRewards(prevRewards => [...prevRewards, reward]);
-    dispatch({type: 'REMOVE_REWARD', payload: reward});
+    dispatch({type: REMOVE_REWARD, payload: reward});
   };
 
-  if (error) return <Text style={styles.error}>Error loading data.</Text>;
-  if (!bounties) return <Text style={styles.loading}>Loading...</Text>;
+  if (error) {
+    return <Text style={styles.error}>Error loading data.</Text>;
+  }
+  if (!bounties) {
+    return <Text style={styles.loading}>Loading...</Text>;
+  }
 
   return (
     <View style={styles.container}>
@@ -60,36 +59,12 @@ export const RewardsScreen = () => {
         contentContainerStyle={styles.listPadding}
       />
 
-      <Text style={styles.title}>Collected Rewards</Text>
+      <Text style={[styles.title, {top: scale(10)}]}>Collected Rewards</Text>
       <FlatList
         data={collectedRewards}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
-          <View style={styles.collectedCard}>
-            <View style={styles.collectedImageContainer}>
-              {item.image ? (
-                <Image
-                  source={{uri: item.image}}
-                  style={styles.collectedImage}
-                />
-              ) : (
-                <View style={styles.noImage}>
-                  <Text style={styles.noImageText}>No Image</Text>
-                </View>
-              )}
-            </View>
-            <View style={styles.collectedInfo}>
-              <Text style={styles.collectedRewardName}>{item.name}</Text>
-              <Text style={styles.collectedPoints}>
-                Points: {item.needed_points}
-              </Text>
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => handleRemoveReward(item)}>
-                <Text style={styles.removeButtonText}>Remove</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <CollectedRewardCard item={item} onRemove={handleRemoveReward} />
         )}
         contentContainerStyle={styles.listPadding}
       />
@@ -100,82 +75,25 @@ export const RewardsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+    paddingVertical: verticalScale(16),
+    paddingHorizontal: scale(20),
     backgroundColor: colors.background,
   },
   title: {
-    fontSize: 24,
+    fontSize: moderateScale(17),
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
   },
   error: {
     color: 'red',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: verticalScale(20),
   },
   loading: {
     textAlign: 'center',
-    marginTop: 20,
-  },
-  collectedCard: {
-    backgroundColor: colors.background,
-    borderRadius: 8,
-    elevation: 3,
-    marginBottom: 15,
-    flexDirection: 'row',
-    padding: 10,
-    shadowColor: colors.foreground,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  collectedImageContainer: {
-    flex: 1,
-    marginRight: 10,
-  },
-  collectedImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-  },
-  noImage: {
-    width: 80,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.bac,
-    borderRadius: 8,
-  },
-  noImageText: {
-    color: colors.secondBackground,
-  },
-  collectedInfo: {
-    flex: 2,
-    justifyContent: 'center',
-  },
-  collectedRewardName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  collectedPoints: {
-    fontSize: 14,
-    color: colors.secondBackground,
-    marginBottom: 10,
-  },
-  removeButton: {
-    backgroundColor: colors.danger,
-    borderRadius: 8,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  removeButtonText: {
-    color: colors.background,
-    fontWeight: 'bold',
+    marginTop: verticalScale(20),
   },
   listPadding: {
-    paddingHorizontal: 8,
+    paddingHorizontal: scale(8),
   },
 });

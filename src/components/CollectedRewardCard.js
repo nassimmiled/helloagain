@@ -6,29 +6,29 @@ import {theme} from '~/themes';
 
 const {colors} = theme;
 
-export const RewardCard = ({reward, onCollect}) => {
-  const handleCollect = () => {
-    onCollect(reward);
+export const CollectedRewardCard = ({item, onRemove}) => {
+  const onPressRemoveItem = () => {
+    onRemove(item);
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.imageContainer}>
-        {reward.image ? (
-          <Image source={{uri: reward.image}} style={styles.image} />
+    <View style={styles.collectedCard}>
+      <View style={styles.collectedImageContainer}>
+        {item.image ? (
+          <Image source={{uri: item.image}} style={styles.collectedImage} />
         ) : (
           <View style={styles.noImage}>
             <Text style={styles.noImageText}>No Image</Text>
           </View>
         )}
       </View>
-      <View style={styles.info}>
-        <Text style={styles.rewardName}>{reward.name}</Text>
-        <Text style={styles.rewardPoints}>
-          Points needed: {reward.needed_points}
-        </Text>
-        <TouchableOpacity style={styles.button} onPress={handleCollect}>
-          <Text style={styles.buttonText}>Collect Reward</Text>
+      <View style={styles.collectedInfo}>
+        <Text style={styles.collectedRewardName}>{item.name}</Text>
+        <Text style={styles.collectedPoints}>Points: {item.needed_points}</Text>
+        <TouchableOpacity
+          style={styles.removeButton}
+          onPress={onPressRemoveItem}>
+          <Text style={styles.removeButtonText}>Remove</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -36,7 +36,7 @@ export const RewardCard = ({reward, onCollect}) => {
 };
 
 const styles = StyleSheet.create({
-  card: {
+  collectedCard: {
     backgroundColor: colors.background,
     borderRadius: scale(8),
     elevation: 3,
@@ -48,49 +48,52 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: scale(4),
   },
-  imageContainer: {
+  collectedImageContainer: {
     flex: 1,
     marginRight: scale(10),
     alignSelf: 'center',
   },
-  image: {
+  collectedImage: {
     width: scale(75),
     height: scale(75),
     borderRadius: scale(8),
   },
   noImage: {
-    width: scale(75),
-    height: scale(75),
+    width: scale(80),
+    height: scale(80),
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.bac,
     borderRadius: scale(8),
   },
   noImageText: {
     color: colors.secondBackground,
   },
-  info: {
+  collectedInfo: {
     flex: 2,
     justifyContent: 'center',
   },
-  rewardName: {
+  collectedRewardName: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
     marginBottom: verticalScale(5),
   },
-  rewardPoints: {
+  collectedPoints: {
     fontSize: moderateScale(14),
     color: colors.secondBackground,
     marginBottom: verticalScale(10),
   },
-  button: {
-    backgroundColor: colors.primary,
+  removeButton: {
+    backgroundColor: colors.danger,
     borderRadius: scale(8),
-    padding: scale(10),
+    paddingVertical: verticalScale(5),
+    paddingHorizontal: scale(10),
     alignItems: 'center',
   },
-  buttonText: {
+  removeButtonText: {
     color: colors.background,
     fontWeight: 'bold',
   },
 });
+
+export default CollectedRewardCard;
