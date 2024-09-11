@@ -1,2 +1,2 @@
-export {RewardCard} from './RewardCard';
 export {CollectedRewardCard} from './CollectedRewardCard';
+export {RewardCard} from './RewardCard';

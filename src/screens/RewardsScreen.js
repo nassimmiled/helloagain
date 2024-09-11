@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
 import {useDispatch, useSelector} from 'react-redux';
 import useSWR from 'swr';
-import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
 
-import {RewardCard, CollectedRewardCard} from '~/components';
+import {CollectedRewardCard, RewardCard} from '~/components';
 import {COLLECT_REWARD, REMOVE_REWARD} from '~/constants';
 import {theme} from '~/themes';
 
